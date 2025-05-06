@@ -1,5 +1,3 @@
-# README
-
 <h3 align="center">
 smart-translate.nvim
 </h3>
@@ -12,12 +10,9 @@ smart-translate.nvim
 Powerful Caching System Builds Intelligent Translators
 </h6>
 
-<div style="font-size:.8rem; font-weight:lighter;color:#E95793">
-<center>
+<h6 align="center" style="font-size:.8rem; font-weight:lighter;color:#E95793">
 <p>`smart-translate.nvim` is a very fast and elegantly designed plugin that provides you with an experience like no other translation plugin</p>.
-<p>The plugin has a well-designed specification and pluggable design, so you can quickly contribute great PR<p>.
-</center>
-</div>
+</h6>
 
 ## Features
 
