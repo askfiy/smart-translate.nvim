@@ -115,6 +115,12 @@ Here are some examples.
 :normal! m'viw<cr>:Translate --target=zh-CN --source=en --handle=float<cr>`'
 ```
 
+## language supports
+
+The language is unified using Google Translate style:
+
+- [languages](https://cloud.google.com/translate/docs/languages) 
+
 ## Hook functions
 
 `smart-translate.nvim` provides 2 `hooks` functions.
