@@ -75,7 +75,7 @@ function M.setup(opts)
                 vim.split(content, "\n", { trimempty = false })
         end
 
-        translator:translte()
+        translator:translate()
     end, {
         nargs = "*",
         range = true,
