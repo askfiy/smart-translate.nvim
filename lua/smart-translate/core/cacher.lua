@@ -88,10 +88,9 @@ function cacher.save()
 end
 
 --- Load cache file (use uv to read binary)
-local function load_cache()
+function cacher.load_cache()
     local fd = uv.fs_open(filepath, "r", 438)
     if not fd then
-
         --Create empty file
         local enc = vim.mpack.encode({})
         local file = uv.fs_open(filepath, "w", 438)
@@ -118,11 +117,6 @@ local function load_cache()
         end
     end
 end
-
--- Load cache (when Vim starts)
-vim.api.nvim_create_autocmd("VimEnter", {
-    callback = load_cache,
-})
 
 -- Save cache (before exiting)
 vim.api.nvim_create_autocmd("VimLeavePre", {

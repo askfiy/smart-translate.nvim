@@ -13,6 +13,7 @@ local M = {}
 ---@param opts? table<string, any>
 function M.setup(opts)
     config.update(opts)
+    cacher.load_cache()
 
     vim.api.nvim_create_user_command("Translate", function(env)
         local translator = Translator.new(env)
