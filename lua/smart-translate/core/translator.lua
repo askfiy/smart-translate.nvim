@@ -71,7 +71,7 @@ function Translator:parser_env(env)
     end
 end
 
-function Translator:translte()
+function Translator:translate()
     self.original = config.hooks.before_translate({
         mode = self.mode,
         engine = self.engine,

@@ -49,7 +49,7 @@ setmetatable(config, {
 
 ---@param opts? table<string, any>
 function config.update(opts)
-    config = vim.tbl_deep_extend("force", default_config, opts or {})
+    default_config = vim.tbl_deep_extend("force", default_config, opts or {})
 end
 
 return config
