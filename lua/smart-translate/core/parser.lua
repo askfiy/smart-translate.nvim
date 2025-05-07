@@ -60,15 +60,15 @@ function parser.comment(bufnr)
         -- Extract actual content
         local line_content = ""
         if line_start_col <= line_end_col then
-            line_content = string.sub(line_text, line_start_col, line_end_col)
+            line_content = line_text:sub(line_start_col, line_end_col)
         end
 
-        table.insert(content, line_content)
         table.insert(range, {
             lnum = current_row,
             scol = line_start_col,
             ecol = line_end_col,
         })
+        table.insert(content, line_content)
     end
 
     return { range, content }
@@ -115,27 +115,21 @@ function parser.select(mode)
         end
 
         if mode == "v" then
-            local range = vim.tbl_map(function(lnum)
+            local range = {}
+            local content = {}
+
+            for _, lnum in ipairs(vim.fn.range(srow, erow)) do
                 local line_text = vim.fn.getline(lnum)
-                local line_scol = (lnum == srow) and scol or 1
-                local line_ecol = (lnum == erow) and ecol or #line_text
+                local line_ecol = math.min(#line_text, ecol)
                 line_ecol = u8.adjust_boundary(line_text, line_ecol)
 
-                return {
+                table.insert(range, {
                     lnum = lnum,
-                    scol = line_scol,
+                    scol = scol,
                     ecol = line_ecol,
-                }
-            end, vim.fn.range(srow, erow))
-
-            local content = vim.api.nvim_buf_get_text(
-                0,
-                srow - 1,
-                scol - 1,
-                erow - 1,
-                ecol,
-                {}
-            )
+                })
+                table.insert(content, line_text:sub(scol, line_ecol))
+            end
 
             return { range, content }
         end
@@ -154,18 +148,7 @@ function parser.select(mode)
                     scol = scol,
                     ecol = line_ecol,
                 })
-
-                table.insert(
-                    content,
-                    vim.api.nvim_buf_get_text(
-                        0,
-                        lnum - 1,
-                        scol - 1,
-                        lnum - 1,
-                        ecol,
-                        {}
-                    )[1] or ""
-                )
+                table.insert(content, line_text:sub(scol, line_ecol))
             end
 
             return { range, content }
