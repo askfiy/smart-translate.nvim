@@ -19,7 +19,7 @@ Powerful Caching System Builds Intelligent Translators
 > The following features build the powerful `smart-translate.nvim`.
 
 - Intelligent caching system, no need for repeated API calls, fast and accurate we have it all!
-- Multiple engine support (`google`, `bing`, `deepl`), more will be added in the future.
+- Multiple engine support (`google`, `bing`, `deepl`) or build your own translator, more will be added in the future.
 - Rich export capabilities (floating window, split window, replace, clipboard)
 
 ## Install and Use
@@ -27,7 +27,7 @@ Powerful Caching System Builds Intelligent Translators
 > [!IMPORTANT]
 >
 > - `curl`
-> - [tree-sitter-http](https://github.com/rest-nvim/tree-sitter-http) is not mandatory, you will be missing some of the functionality.
+> - [tree-sitter-http](https://github.com/rest-nvim/tree-sitter-http) is not mandatory, you will be missing some of the functionality, such as `--comment`.
 
 To install using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
@@ -170,17 +170,14 @@ require("smart-translate").setup({
         engine = {
             {
                 name = "translate-shell",
-
                 ---@param source string
                 ---@param target string
                 ---@param original string[]
                 ---@param callback fun(translation: string[])
                 translate = function(source, target, original, callback)
-
                     -- 1. Optional: Do you need to convert the command line input language to the language supported by the translator?
                     source = "en"
                     target = "zh"
-
                     -- 2. Add your custom processing logic
                     vim.system(
                         {
@@ -192,8 +189,7 @@ require("smart-translate").setup({
                         { text = true },
                         ---@param completed vim.SystemCompleted
                         vim.schedule_wrap(function(completed)
-
-                            -- 3. Call callback for rendering processing
+                            -- 3. Call callback for rendering processing, the translation needs to return string[]
                             callback(
                                 vim.split(
                                     completed.stdout,
