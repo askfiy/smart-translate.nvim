@@ -40,5 +40,17 @@
 ---@field public translation string[]
 
 ---@class SmartTranslate.Config.HooksOpts
----@field before_translate fun(otps: SmartTranslate.Config.Hooks.BeforeCallOpts): string[]
----@field after_translate fun(otps: SmartTranslate.Config.Hooks.AfterCallOpts): string[]
+---@field public before_translate fun(otps: SmartTranslate.Config.Hooks.BeforeCallOpts): string[]
+---@field public after_translate fun(otps: SmartTranslate.Config.Hooks.AfterCallOpts): string[]
+
+---@class SmartTranslate.Config.Translator.Engine
+---@field public name string
+---@field public translate fun(source: string, target:string, original: string[], callback: fun(translation: string[]))
+
+---@class SmartTranslate.Config.Translator.Handle
+---@field public name string
+---@field public render fun(translator: SmartTranslate.Translator)
+
+---@class SmartTranslate.Config.Translator
+---@field public engine SmartTranslate.Config.Translator.Engine[]
+---@field public handle SmartTranslate.Config.Translator.Engine[]

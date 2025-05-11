@@ -2,6 +2,7 @@
 ---@field public default SmartTranslate.Config.DefaultOpts
 ---@field public engine SmartTranslate.Config.EngineOpts
 ---@field public hooks SmartTranslate.Config.HooksOpts
+---@field public translator SmartTranslate.Config.Translator
 local config = {}
 
 local default_config = {
@@ -32,6 +33,49 @@ local default_config = {
         after_translate = function(opts)
             return opts.translation
         end,
+    },
+    translator = {
+        engine = {
+            {
+                name = "translate-shell",
+                ---@param source string
+                ---@param target string
+                ---@param original string[]
+                ---@param callback fun(translation: string[])
+                translate = function(source, target, original, callback)
+                    source = "en"
+                    target = "zh"
+                    vim.system(
+                        {
+                            "trans",
+                            "-b",
+                            ("%s:%s"):format(source, target),
+                            table.concat(original, "\n"),
+                            ---@param completed vim.SystemCompleted
+                        },
+                        { text = true },
+                        vim.schedule_wrap(function(completed)
+                            callback(
+                                vim.split(
+                                    completed.stdout,
+                                    "\n",
+                                    { trimempty = false }
+                                )
+                            )
+                        end)
+                    )
+                end,
+            },
+        },
+        handle = {
+            {
+                name = "echo",
+                ---@param translator SmartTranslate.Translator
+                render = function(translator)
+                    vim.print(translator.translation)
+                end,
+            },
+        },
     },
 }
 

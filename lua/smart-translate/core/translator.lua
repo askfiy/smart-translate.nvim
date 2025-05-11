@@ -11,19 +11,19 @@ local special_cmds = {
 }
 
 ---@class SmartTranslate.Translator
----@field public namespace integer
----@field public special string[]
----@field public buffer buffer
----@field public window window
----@field public mode string
----@field public source string
----@field public target string
----@field public handle string
----@field public engine string
----@field public original string[]
----@field public translation string[]
----@field public use_cache_translation boolean
----@field public range table<string, integer>[]
+---@field public namespace integer                          -- Namespace
+---@field public special string[]                           -- Special operations, e.g., --comment/--cleanup
+---@field public buffer buffer                              -- The buffer the original text came from
+---@field public window window                              -- The window the original text came from
+---@field public mode string                                -- Mode when translation was invoked
+---@field public source string                              -- Source language
+---@field public target string                              -- Target language
+---@field public handle string                              -- Handler
+---@field public engine string                              -- Translation engine
+---@field public original string[]                          -- Original text
+---@field public public translation string[]                -- Translated text
+---@field public use_cache_translation boolean              -- Whether cache was hit
+---@field public range table<string, integer>[]             -- Original text range
 ---@field public engine_proxy SmartTranslate.EngineProxy
 ---@field public handle_proxy SmartTranslate.HandleProxy
 local Translator = {}

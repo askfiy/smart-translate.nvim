@@ -1,18 +1,14 @@
 local util = require("smart-translate.util")
 local language = require("smart-translate.core.language")
 
-local dirname = vim.fn.fnamemodify(util.filepath(), ":h")
-local engine = util.filelist(dirname .. "/engine")
-local handle = util.filelist(dirname .. "/handle")
-
 local complete = {
     -- When -- appears, you can use the following key to complete it
     -- When something like --source= appears, = can be completed with options in language, and so on.
     options = {
-        handle = handle,
-        engine = engine,
         source = language,
         target = language,
+        handle = util.handles(),
+        engine = util.engines(),
         comment = {},
         cleanup = {},
         -- TODO: Later implementation

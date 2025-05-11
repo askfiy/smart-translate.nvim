@@ -1,7 +1,34 @@
 local md5 = require("smart-translate.libs.md5")
+local util = require("smart-translate.util")
 local config = require("smart-translate.config")
 local cacher = require("smart-translate.core.cacher")
 local content = require("smart-translate.util.content")
+
+---@param engine string
+---@return boolean
+local function has_engine(engine)
+    return vim.tbl_contains(util.engines(), engine)
+end
+
+---@param engine string
+---@return table
+local function get_engine(engine)
+    local ok, pkg = pcall(
+        require,
+        ("smart-translate.core.engine.%s"):format(engine:lower())
+    )
+
+    if ok then
+        return pkg
+    end
+    ---@param item SmartTranslate.Config.Translator.Engine
+
+    local filters = vim.tbl_filter(function(item)
+        return item.name == engine
+    end, config.translator.engine)
+
+    return not vim.tbl_isempty(filters) and filters[1] or {}
+end
 
 --[[
     A sophisticated caching mechanism is integral to our translator's design. The system generates cache keys using MD5 hashing, combining four essential components:
@@ -19,7 +46,7 @@ local content = require("smart-translate.util.content")
 ]]
 
 ---@class SmartTranslate.Engine
----@field translate fun(source: string, target: string, original: string[], callback: fun(translation: string[]))
+---@field public translate fun(source: string, target: string, original: string[], callback: fun(translation: string[]))
 
 ---@class SmartTranslate.EngineProxy
 ---@field private placeholder string
@@ -31,8 +58,11 @@ EngineProxy.__index = EngineProxy
 ---@param proxy string
 function EngineProxy.new(proxy)
     local self = setmetatable({}, EngineProxy)
+    assert(has_engine(proxy), ("Invalid engine: %s"):format(proxy))
+
     self.proxy = proxy
-    self.engine = require(("smart-translate.core.engine.%s"):format(proxy:lower()))
+    self.engine = get_engine(proxy)
+
     self.placeholder = "{{NO_CACHE}}"
 
     assert(

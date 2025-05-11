@@ -62,7 +62,7 @@ local default_config = {
     },
     engine = {
         deepl = {
-            --Support SHELL variables, or fill in directly
+            -- Support SHELL variables, or fill in directly
             api_key = "$DEEPL_API_KEY",
             base_url = "https://api-free.deepl.com/v2/translate",
         },
@@ -79,6 +79,11 @@ local default_config = {
             return opts.translation
         end,
     },
+    -- Custom translator
+    translator = {
+        engine = {},
+        handle = {}
+    }
 }
 ```
 
@@ -119,7 +124,7 @@ Here are some examples.
 
 The language is unified using Google Translate style:
 
-- [languages](https://cloud.google.com/translate/docs/languages) 
+- [languages](https://cloud.google.com/translate/docs/languages)
 
 ## Hook functions
 
@@ -147,6 +152,93 @@ They take one argument, `Opts` as follows.
 ```
 
 The `after_translate` always happens after the cache has been built. So you don't have to worry about your changes affecting the cache, it actually only affects the handling of the `handle`.
+
+## Custom translator(Advanced)
+
+`smart-translate.nvim` Support custom translator.
+
+> [!TIP]
+>
+> - If the lines length of the original text and translation are consistent, the result will be stored in the cache
+> - This will greatly improve the speed of subsequent repeated translations
+
+Examples are as follows:
+
+```lua
+require("smart-translate").setup({
+    translator = {
+        engine = {
+            {
+                name = "translate-shell",
+
+                ---@param source string
+                ---@param target string
+                ---@param original string[]
+                ---@param callback fun(translation: string[])
+                translate = function(source, target, original, callback)
+
+                    -- 1. Optional: Do you need to convert the command line input language to the language supported by the translator?
+                    source = "en"
+                    target = "zh"
+
+                    -- 2. Add your custom processing logic
+                    vim.system(
+                        {
+                            "trans",
+                            "-b",
+                            ("%s:%s"):format(source, target),
+                            table.concat(original, "\n"),
+                        },
+                        { text = true },
+                        ---@param completed vim.SystemCompleted
+                        vim.schedule_wrap(function(completed)
+
+                            -- 3. Call callback for rendering processing
+                            callback(
+                                vim.split(
+                                    completed.stdout,
+                                    "\n",
+                                    { trimempty = false }
+                                )
+                            )
+                        end)
+                    )
+                end,
+            },
+        },
+        handle = {
+            {
+                name = "echo",
+                ---@param translator SmartTranslate.Translator
+                render = function(translator)
+                    vim.print(translator.translation)
+
+                    --[[
+                        SmartTranslate.Translator is an object that contains a lot of useful information:
+
+                        ---@class SmartTranslate.Translator
+                        ---@field public namespace integer                          -- Namespace
+                        ---@field public special string[]                           -- Special operations, e.g., --comment/--cleanup
+                        ---@field public buffer buffer                              -- The buffer the original text came from
+                        ---@field public window window                              -- The window the original text came from
+                        ---@field public mode string                                -- Mode when translation was invoked
+                        ---@field public source string                              -- Source language
+                        ---@field public target string                              -- Target language
+                        ---@field public handle string                              -- Handler
+                        ---@field public engine string                              -- Translation engine
+                        ---@field public original string[]                          -- Original text
+                        ---@field public public translation string[]                -- Translated text
+                        ---@field public use_cache_translation boolean              -- Whether cache was hit
+                        ---@field public range table<string, integer>[]             -- Original text range
+                    ]]
+                end,
+            },
+        },
+    },
+})
+```
+
+If you need to send an `http` request, you can use the [askfiy/http.nvim](https://github.com/askfiy/http.nvim) plug-in or `vim.system`, refer to [Google](./lua/smart-translate/core/engine/google.lua) translation implementation.
 
 ## Similar
 
