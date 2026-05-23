@@ -4,10 +4,17 @@ local EngineProxy = require("smart-translate.core.engine")
 local HandleProxy = require("smart-translate.core.handle")
 
 local special_cmds = {
-    "--stream",
-    "--comment",
-    "--cleanup",
-    "--variable",
+    "stream",
+    "comment",
+    "cleanup",
+    "variable",
+}
+
+local known_options = {
+    source = true,
+    target = true,
+    handle = true,
+    engine = true,
 }
 
 ---@class SmartTranslate.Translator
@@ -58,13 +65,14 @@ end
 ---@param env vim.api.keyset.create_user_command.command_args
 function Translator:parser_env(env)
     for _, v in ipairs(env.fargs) do
-        if v:sub(1, 2) == "--" then
-            if vim.tbl_contains(special_cmds, v) then
-                table.insert(self.special, v)
-            else
-                local parts = vim.split(v:sub(3), "=", { trimempty = true })
-                self[parts[1]] = parts[2]
-            end
+        -- Strip optional leading `--` so both `source=auto` and `--source=auto` work.
+        local arg = v:sub(1, 2) == "--" and v:sub(3) or v
+
+        if vim.tbl_contains(special_cmds, arg) then
+            table.insert(self.special, arg)
+        elseif arg:find("=") and known_options[arg:match("^([^=]+)=")] then
+            local parts = vim.split(arg, "=", { trimempty = true })
+            self[parts[1]] = parts[2]
         else
             table.insert(self.original, v)
         end
