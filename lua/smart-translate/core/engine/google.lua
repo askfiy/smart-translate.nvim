@@ -1,4 +1,5 @@
 local http = require("http")
+local log = require("smart-translate.util.log")
 
 local google = {}
 
@@ -46,6 +47,10 @@ function google.translate(source, target, original, callback)
         target = google.target_lang(target),
     }
 
+    log.debug(("google: request source=%s target=%s lines=%d"):format(
+        json_body.source, json_body.target, #original
+    ))
+
     http.post(
         "https://script.google.com/macros/s/AKfycbx6yuInp-GFwvL1wRX7efsWu88ZVeV6wBzIAzLzST0kS2nuWKiwCCa84_eCUwHiD1Lt/exec",
         {
@@ -57,6 +62,7 @@ function google.translate(source, target, original, callback)
         local err = future:exception()
 
         if err then
+            log.debug("google: request failed: " .. tostring(err))
             vim.api.nvim_echo({
                 {
                     err,
@@ -70,7 +76,11 @@ function google.translate(source, target, original, callback)
 
         if response:ok() then
             local translation = response:json()["translated"]
-            callback(vim.split(translation, "\n", { trimempty = false }))
+            local lines = vim.split(translation, "\n", { trimempty = false })
+            log.debug(("google: response ok, translated %d lines"):format(#lines))
+            callback(lines)
+        else
+            log.debug(("google: response not ok, status=%s"):format(tostring(response.status)))
         end
     end)
 end

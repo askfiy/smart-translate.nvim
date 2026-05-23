@@ -1,5 +1,6 @@
 local config = require("smart-translate.config")
 local http = require("http")
+local log = require("smart-translate.util.log")
 
 local deepl = {}
 
@@ -61,6 +62,10 @@ function deepl.translate(source, target, original, callback)
         api_key = env
     end
 
+    log.debug(("deepl: request source=%s target=%s lines=%d"):format(
+        json_body.source_lang, json_body.target_lang, #original
+    ))
+
     http.post(config.engine.deepl.base_url, {
         headers = {
             Authorization = "DeepL-Auth-Key " .. api_key,
@@ -71,6 +76,7 @@ function deepl.translate(source, target, original, callback)
     }):add_done_callback(function(future)
         local err = future:exception()
         if err then
+            log.debug("deepl: request failed: " .. tostring(err))
             vim.api.nvim_echo({
                 {
                     err,
@@ -82,9 +88,13 @@ function deepl.translate(source, target, original, callback)
 
         local response = future:result()
         if response:ok() then
+            local translations = response:json()["translations"]
+            log.debug(("deepl: response ok, translated %d lines"):format(#translations))
             callback(vim.tbl_map(function(item)
                 return item.text
-            end, response:json()["translations"]))
+            end, translations))
+        else
+            log.debug(("deepl: response not ok, status=%s"):format(tostring(response.status)))
         end
     end)
 end

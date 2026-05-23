@@ -1,5 +1,6 @@
 local util = require("smart-translate.util")
 local config = require("smart-translate.config")
+local log = require("smart-translate.util.log")
 local EngineProxy = require("smart-translate.core.engine")
 local HandleProxy = require("smart-translate.core.handle")
 
@@ -88,6 +89,10 @@ function Translator:translate()
         original = self.original,
     })
 
+    log.debug(("translate: engine=%s source=%s target=%s handle=%s lines=%d"):format(
+        self.engine, self.source, self.target, self.handle, #self.original
+    ))
+
     self.engine_proxy:translate(
         self.source,
         self.target,
@@ -96,6 +101,9 @@ function Translator:translate()
         ---@param translation string[]
         function(use_cache, translation)
             self.use_cache_translation = use_cache
+            log.debug(("translate: done use_cache=%s translated_lines=%d"):format(
+                tostring(use_cache), #translation
+            ))
             self.translation = config.hooks.after_translate({
                 mode = self.mode,
                 engine = self.engine,

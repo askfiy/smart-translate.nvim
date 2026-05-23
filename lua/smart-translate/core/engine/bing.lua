@@ -1,4 +1,5 @@
 local http = require("http")
+local log = require("smart-translate.util.log")
 
 local bing = {}
 
@@ -42,6 +43,10 @@ function bing.translate(source, target, original, callback)
         target = bing.target_lang(target),
     }
 
+    log.debug(("bing: request source=%s target=%s lines=%d"):format(
+        json_body.source, json_body.target, #original
+    ))
+
     http.post(
         "https://script.google.com/macros/s/AKfycbyUeA-GVbT1UtX6dMzwlXDkrZ5Euv0SJAjkBbnXlN3f057YhfD4N4JwseQPEhlvmc1vxw/exec",
         {
@@ -53,6 +58,7 @@ function bing.translate(source, target, original, callback)
         local err = future:exception()
 
         if err then
+            log.debug("bing: request failed: " .. tostring(err))
             vim.api.nvim_echo({
                 {
                     err,
@@ -65,7 +71,11 @@ function bing.translate(source, target, original, callback)
         local response = future:result()
         if response:ok() then
             local translation = response:json()["translated"]
-            callback(vim.split(translation, "\n", { trimempty = false }))
+            local lines = vim.split(translation, "\n", { trimempty = false })
+            log.debug(("bing: response ok, translated %d lines"):format(#lines))
+            callback(lines)
+        else
+            log.debug(("bing: response not ok, status=%s"):format(tostring(response.status)))
         end
     end)
 end

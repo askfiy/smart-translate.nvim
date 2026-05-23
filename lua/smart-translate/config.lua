@@ -6,6 +6,7 @@
 local config = {}
 
 local default_config = {
+    debug = false,
     default = {
         cmds = {
             source = "auto",

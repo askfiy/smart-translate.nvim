@@ -1,5 +1,6 @@
 local config = require("smart-translate.config")
 local http = require("http")
+local log = require("smart-translate.util.log")
 
 local apertium = {}
 
@@ -71,6 +72,10 @@ function apertium.translate(source, target, original, callback)
 
     local base_url = config.engine.apertium.base_url
 
+    log.debug(("apertium: request langpair=%s lines=%d (non-empty=%d)"):format(
+        langpair, #original, #non_empty
+    ))
+
     http.post(base_url, {
         headers = { ["Content-Type"] = "application/x-www-form-urlencoded" },
         data = {
@@ -82,6 +87,7 @@ function apertium.translate(source, target, original, callback)
     }):add_done_callback(function(future)
         local err = future:exception()
         if err then
+            log.debug("apertium: request failed: " .. tostring(err))
             vim.api.nvim_echo({
                 { "Apertium: translation request failed", "ErrorMsg" },
             }, true, {})
@@ -98,15 +104,18 @@ function apertium.translate(source, target, original, callback)
                     delim,
                     { plain = true }
                 )
+                log.debug(("apertium: response ok, translated %d segment(s)"):format(#translated))
                 for k, idx in ipairs(non_empty) do
                     result[idx] = translated[k] or original[idx]
                 end
             else
+                log.debug("apertium: response ok but no translatedText in payload")
                 vim.api.nvim_echo({
                     { "Apertium: translation request failed", "ErrorMsg" },
                 }, true, {})
             end
         else
+            log.debug(("apertium: response not ok, status=%s"):format(tostring(response.status)))
             vim.api.nvim_echo({
                 { "Apertium: translation request failed", "ErrorMsg" },
             }, true, {})
