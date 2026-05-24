@@ -48,7 +48,7 @@ To install using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 - `default.cmds.source`: default source language (`"auto"` to detect)
 - `default.cmds.target`: default target language (e.g. `"zh-CN"`, `"en"`, `"es"`)
-- `default.cmds.handle`: default handler (`"float"`, `"split"`, `"replace"`, `"register"`, or a custom handle name)
+- `default.cmds.handle`: default handler (`"float"`, `"split"`, `"vsplit"`, `"replace"`, `"register"`, or a custom handle name)
 - `default.cmds.engine`: default engine (`"google"`, `"bing"`, `"deepl"`, `"apertium"`, or a custom engine name)
 - `default.cache`: whether to cache translations (boolean)
 - `engine.deepl.api_key` / `engine.deepl.base_url`: credentials for the DeepL engine
@@ -107,7 +107,7 @@ The default command for the plugin is `Translate`, which accepts the following o
 | `source` | Source language of the original text                     | `auto` or any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `en`, `es`, `ja`) |
 | `target` | Target language of the translation                       | Any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `zh-CN`, `de`, `fr`) |
 | `engine` | Translation engine to use                                | `google`, `bing`, `deepl`, `apertium`, or any custom engine `name` |
-| `handle` | How the translation is rendered / delivered              | `float`, `split`, `replace`, `register`, or any custom handle `name` |
+| `handle` | How the translation is rendered / delivered              | `float`, `split`, `vsplit`, `replace`, `register`, or any custom handle `name` |
 
 Special sub-options (flags, no value):
 
@@ -120,6 +120,7 @@ Special sub-options (flags, no value):
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `float`    | Show the translation in a floating window anchored at the cursor. Closes on any key press. Supports paging with `<C-f>` / `<C-b>`.        |
 | `split`    | Show the translation in a split window above the current window. The split follows the cursor and highlights the line being translated.  |
+| `vsplit`   | Show the translation in a vertical split to the right of the current window, occupying half the screen width.                            |
 | `replace`  | Replace the original text in the buffer with the translation, preserving the original range.                                              |
 | `register` | Write the translation into the current Vim register (`vim.v.register`). Use `"ay` etc. to choose the target register before invoking.     |
 
