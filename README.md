@@ -19,7 +19,7 @@ Powerful Caching System Builds Intelligent Translators
 > The following features build the powerful `smart-translate.nvim`.
 
 - Intelligent caching system, no need for repeated API calls, fast and accurate we have it all!
-- Multiple engine support (`google`, `bing`, `deepl`) or build your own translator, more will be added in the future.
+- Multiple engine support (`google`, `bing`, `deepl`, `apertium`) or build your own translator, more will be added in the future.
 - Rich export capabilities (floating window, split window, replace, clipboard)
 
 ## Install and Use
@@ -49,9 +49,10 @@ To install using [lazy.nvim](https://github.com/folke/lazy.nvim):
 - `default.cmds.source`: default source language (`"auto"` to detect)
 - `default.cmds.target`: default target language (e.g. `"zh-CN"`, `"en"`, `"es"`)
 - `default.cmds.handle`: default handler (`"float"`, `"split"`, `"replace"`, `"register"`, or a custom handle name)
-- `default.cmds.engine`: default engine (`"google"`, `"bing"`, `"deepl"`, or a custom engine name)
+- `default.cmds.engine`: default engine (`"google"`, `"bing"`, `"deepl"`, `"apertium"`, or a custom engine name)
 - `default.cache`: whether to cache translations (boolean)
 - `engine.deepl.api_key` / `engine.deepl.base_url`: credentials for the DeepL engine
+- `engine.apertium.base_url`: Apertium APY endpoint (defaults to the public instance at `https://apertium.org/apy/translate`; override to point at a self-hosted server)
 - `hooks.before_translate` / `hooks.after_translate`: see [Hook functions](#hook-functions)
 - `translator.engine` / `translator.handle`: see [Custom translator](#custom-translatoradvanced)
 
@@ -72,6 +73,9 @@ local default_config = {
             -- Support SHELL variables, or fill in directly
             api_key = "$DEEPL_API_KEY",
             base_url = "https://api-free.deepl.com/v2/translate",
+        },
+        apertium = {
+            base_url = "https://apertium.org/apy/translate",
         },
     },
     hooks = {
@@ -102,7 +106,7 @@ The default command for the plugin is `Translate`, which accepts the following o
 | -------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
 | `source` | Source language of the original text                     | `auto` or any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `en`, `es`, `ja`) |
 | `target` | Target language of the translation                       | Any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `zh-CN`, `de`, `fr`) |
-| `engine` | Translation engine to use                                | `google`, `bing`, `deepl`, or any custom engine `name`            |
+| `engine` | Translation engine to use                                | `google`, `bing`, `deepl`, `apertium`, or any custom engine `name` |
 | `handle` | How the translation is rendered / delivered              | `float`, `split`, `replace`, `register`, or any custom handle `name` |
 
 Special sub-options (flags, no value):
@@ -128,6 +132,7 @@ Custom handles defined under `translator.handle` are also valid values (use the 
 | `google` | Default. No API key required.                                                                                                  |
 | `bing`   | No API key required.                                                                                                           |
 | `deepl`  | Requires `api_key` (and optionally `base_url`) under `engine.deepl`. The api_key field supports shell variables like `$DEEPL_API_KEY`. |
+| `apertium` | No API key required. Uses the public Apertium APY instance by default. Override `engine.apertium.base_url` to point at a self-hosted server. Language codes follow ISO 639-3 (`eng`, `cat`, `spa`, etc.); a mapping from common two-letter codes is built in. |
 
 Custom engines defined under `translator.engine` are also valid values (use the value you set in `name`).
 
