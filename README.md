@@ -100,21 +100,21 @@ local default_config = {
 
 ## Plugin Commands
 
-The default command for the plugin is `Translate`, which accepts the following options. Options use `key=value` form, with no leading `--`. The legacy `--key=value` form is still accepted for backwards compatibility.
+The default command for the plugin is `Translate`, which accepts the following options.
 
-| Option   | Description                                              | Accepted values                                                   |
-| -------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
-| `source` | Source language of the original text                     | `auto` or any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `en`, `es`, `ja`) |
-| `target` | Target language of the translation                       | Any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `zh-CN`, `de`, `fr`) |
-| `engine` | Translation engine to use                                | `google`, `bing`, `deepl`, `apertium`, or any custom engine `name` |
-| `handle` | How the translation is rendered / delivered              | `float`, `split`, `vsplit`, `replace`, `register`, or any custom handle `name` |
+| Option      | Description                                              | Accepted values                                                   |
+| ----------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
+| `--source`  | Source language of the original text                     | `auto` or any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `en`, `es`, `ja`) |
+| `--target`  | Target language of the translation                       | Any [Google Translate language code](https://cloud.google.com/translate/docs/languages) (e.g. `zh-CN`, `de`, `fr`) |
+| `--engine`  | Translation engine to use                                | `google`, `bing`, `deepl`, `apertium`, or any custom engine `name` |
+| `--handle`  | How the translation is rendered / delivered              | `float`, `split`, `vsplit`, `replace`, `register`, or any custom handle `name` |
 
 Special sub-options (flags, no value):
 
-- `comment`: translate only the content of the comment block under the cursor. Requires [tree-sitter-http](https://github.com/rest-nvim/tree-sitter-http).
-- `cleanup`: clear all caches.
+- `--comment`: translate only the content of the comment block under the cursor. Requires [tree-sitter-http](https://github.com/rest-nvim/tree-sitter-http).
+- `--cleanup`: clear all caches.
 
-### Available `handle` values
+### Available `--handle` values
 
 | Handle     | Behavior                                                                                                                                  |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -126,7 +126,7 @@ Special sub-options (flags, no value):
 
 Custom handles defined under `translator.handle` are also valid values (use the value you set in `name`).
 
-### Available `engine` values
+### Available `--engine` values
 
 | Engine   | Notes                                                                                                                          |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -146,14 +146,14 @@ Here are some examples.
 -- Automatically selects the original based on the current Mode
 :Translate
 
--- Select the Comment Block under the current cursor for translation.
-:Translate comment
+--Select the Comment Block under the current cursor for translation.
+:Translate --comment
 
 -- with option parameters
-:Translate source=auto target=zh-CN engine=google handle=float comment
+:Translate --source=auto --target=zh-CN --engine=google --handle=float --comment
 
 -- Translation of words
-:normal! m'viw<cr>:Translate target=zh-CN source=en handle=float<cr>`'
+:normal! m'viw<cr>:Translate --target=zh-CN --source=en --handle=float<cr>`'
 ```
 
 ## language supports

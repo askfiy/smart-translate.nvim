@@ -36,14 +36,14 @@ function M.setup(opts)
             end
         end
 
-        if vim.tbl_contains(translator.special, "stream") then
+        if vim.tbl_contains(translator.special, "--stream") then
             vim.notify("Not implemented", "ERROR", {
                 annote = "[smart-translate]",
             })
             return
         end
 
-        if vim.tbl_contains(translator.special, "cleanup") then
+        if vim.tbl_contains(translator.special, "--cleanup") then
             vim.notify("Cleanup cacher success", "INFO", {
                 annote = "[smart-translate]",
             })
@@ -54,7 +54,7 @@ function M.setup(opts)
         if not vim.tbl_isempty(translator.original) then
             translator.original = { table.concat(translator.original, " ") }
         else
-            if not vim.tbl_contains(translator.special, "comment") then
+            if not vim.tbl_contains(translator.special, "--comment") then
                 translator.range, translator.original =
                     unpack(parser.select(translator.mode))
             else
