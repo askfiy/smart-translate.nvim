@@ -6,8 +6,6 @@ local cacher = require("smart-translate.core.cacher")
 local complete = require("smart-translate.core.complete")
 local Translator = require("smart-translate.core.translator")
 
--- require("smart-translate.debug")
-
 local M = {}
 
 ---@param opts? table<string, any>

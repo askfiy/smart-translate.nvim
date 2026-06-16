@@ -6,6 +6,7 @@
 local config = {}
 
 local default_config = {
+    debug = false,
     default = {
         cmds = {
             source = "auto",
@@ -20,6 +21,11 @@ local default_config = {
             --Support SHELL variables, or fill in directly
             api_key = "$DEEPL_API_KEY",
             base_url = "https://api-free.deepl.com/v2/translate",
+        },
+        apertium = {
+            -- Public Apertium-APY instance. Override to point at a
+            -- self-hosted apertium-apy or any compatible endpoint.
+            base_url = "https://apertium.org/apy/translate",
         },
     },
     hooks = {

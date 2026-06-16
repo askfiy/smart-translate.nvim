@@ -120,15 +120,16 @@ function parser.select(mode)
 
             for _, lnum in ipairs(vim.fn.range(srow, erow)) do
                 local line_text = vim.fn.getline(lnum)
-                local line_ecol = math.min(#line_text, ecol)
+                local line_scol = (lnum == srow) and scol or 1
+                local line_ecol = (lnum == erow) and math.min(#line_text, ecol) or #line_text
                 line_ecol = u8.adjust_boundary(line_text, line_ecol)
 
                 table.insert(range, {
                     lnum = lnum,
-                    scol = scol,
+                    scol = line_scol,
                     ecol = line_ecol,
                 })
-                table.insert(content, line_text:sub(scol, line_ecol))
+                table.insert(content, line_text:sub(line_scol, line_ecol))
             end
 
             return { range, content }

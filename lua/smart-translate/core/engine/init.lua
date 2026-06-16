@@ -1,6 +1,7 @@
 local md5 = require("smart-translate.libs.md5")
 local util = require("smart-translate.util")
 local config = require("smart-translate.config")
+local log = require("smart-translate.util.log")
 local cacher = require("smart-translate.core.cacher")
 local content = require("smart-translate.util.content")
 
@@ -79,6 +80,7 @@ end
 ---@param callback function(translation: string[])
 function EngineProxy:translate(source, target, original, callback)
     if not config.default.cache then
+        log.debug(("engine[%s]: cache disabled, translating %d lines"):format(self.proxy, #original))
         self.engine.translate(source, target, original, function(translation)
             callback(false, translation)
         end)
@@ -88,8 +90,12 @@ function EngineProxy:translate(source, target, original, callback)
     local cached, no_cache = self:query_cache(source, target, original)
 
     if vim.tbl_isempty(no_cache) then
+        log.debug(("engine[%s]: all %d lines from cache"):format(self.proxy, #cached))
         callback(true, cached)
     else
+        log.debug(("engine[%s]: %d cache miss(es), sending %d/%d lines to engine"):format(
+            self.proxy, #no_cache, #no_cache, #original
+        ))
         self.engine.translate(source, target, original, function(translation)
             local cached_copy = vim.deepcopy(cached)
 

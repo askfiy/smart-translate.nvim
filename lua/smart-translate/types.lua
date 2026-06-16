@@ -22,8 +22,12 @@
 ---@field public api_key string
 ---@field public base_url string
 
+---@class SmartTranslate.Config.EngineOpts.Apertium
+---@field public base_url string
+
 ---@class SmartTranslate.Config.EngineOpts
 ---@field public deepl SmartTranslate.Config.EngineOpts.DeepL
+---@field public apertium SmartTranslate.Config.EngineOpts.Apertium
 
 ---@class SmartTranslate.Config.Hooks.BeforeCallOpts
 ---@field public mode string
