@@ -118,7 +118,7 @@ Special sub-options (flags, no value):
 
 | Handle     | Behavior                                                                                                                                  |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `float`    | Show the translation in a floating window anchored at the cursor. Closes on any key press. Supports paging with `<C-f>` / `<C-b>`.        |
+| `float`    | Show the translation in a floating window below the selection (above it when there is no room; at the cursor when nothing is selected). Long lines wrap. Closes on any key press. Supports paging with `<C-f>` / `<C-b>`.        |
 | `split`    | Show the translation in a split window above the current window. The split follows the cursor and highlights the line being translated.  |
 | `vsplit`   | Show the translation in a vertical split to the right of the current window, occupying half the screen width.                            |
 | `replace`  | Replace the original text in the buffer with the translation, preserving the original range.                                              |
