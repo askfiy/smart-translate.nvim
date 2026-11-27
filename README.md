@@ -118,7 +118,7 @@ Special sub-options (flags, no value):
 
 | Handle     | Behavior                                                                                                                                  |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `float`    | Show the translation in a floating window anchored at the cursor. Closes on any key press. Supports paging with `<C-f>` / `<C-b>`.        |
+| `float`    | Show the translation in a floating window below the selection (above it when there is no room; at the cursor when nothing is selected). Long lines wrap. Closes on any key press. Supports paging with `<C-f>` / `<C-b>`.        |
 | `split`    | Show the translation in a split window above the current window. The split follows the cursor and highlights the line being translated.  |
 | `vsplit`   | Show the translation in a vertical split to the right of the current window, occupying half the screen width.                            |
 | `replace`  | Replace the original text in the buffer with the translation, preserving the original range.                                              |
@@ -188,6 +188,19 @@ They take one argument, `Opts` as follows.
 ```
 
 The `after_translate` always happens after the cache has been built. So you don't have to worry about your changes affecting the cache, it actually only affects the handling of the `handle`.
+
+## Events
+
+After a translation has been rendered by its `handle`, `smart-translate.nvim` fires a `User SmartTranslateDone` autocmd, allowing third-party plugins to integrate. The event data (`ev.data`) contains `mode`, `engine`, `source`, `target`, `handle`, `original`, `translation` and `use_cache`.
+
+```lua
+vim.api.nvim_create_autocmd("User", {
+    pattern = "SmartTranslateDone",
+    callback = function(ev)
+        vim.print(ev.data.translation)
+    end,
+})
+```
 
 ## Custom translator(Advanced)
 
