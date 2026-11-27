@@ -105,6 +105,21 @@ function Translator:translate()
             })
 
             self.handle_proxy:render(self)
+
+            vim.api.nvim_exec_autocmds("User", {
+                pattern = "SmartTranslateDone",
+                modeline = false,
+                data = {
+                    mode = self.mode,
+                    engine = self.engine,
+                    source = self.source,
+                    target = self.target,
+                    handle = self.handle,
+                    original = self.original,
+                    translation = self.translation,
+                    use_cache = self.use_cache_translation,
+                },
+            })
         end
     )
 end
